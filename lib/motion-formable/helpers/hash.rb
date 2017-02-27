@@ -14,10 +14,15 @@ class HashHelper
     hash = {}
     hashes.each do |h|
       h.each do |k, v|
-        case hash[k]
-        when nil then hash[k] = v
-        when Array then  hash[k] << v
-        else hash[k] = [hash[k], v]
+        current_value = hash[k]
+        if current_value == nil
+          hash[k] = v
+        elsif current_value.is_a? Array
+          hash[k] << v
+        elsif current_value.is_a?(Hash) && v.is_a?(Hash)
+          hash[k].merge!(v)
+        else
+          hash[k] = [hash[k], v]
         end
       end
     end
